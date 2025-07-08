@@ -1,1 +1,0 @@
-import{_ as e}from"./plugin-vueexport-helper-DlAUqK2U.js";import{W as r,S as t}from"./@vue-aiyeMTts.js";const c={};function o(n,s){return t(),r("div",null," 微应用数据详情 ")}const f=e(c,[["render",o]]);export{f as default};
