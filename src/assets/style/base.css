@@ -1,0 +1,53 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  min-width: 1440px;
+  min-height: 900px;
+  overflow: auto;
+  font-family: 'Noto Sans SC';
+  color: #333; /* 深灰色 */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0; /* 上边距较大，下边距较小 */
+}
+
+a {
+  color: #007bff; /* 蓝色 */
+  text-decoration: none;
+}
+
+/* a:hover {
+  text-decoration: underline;
+} */
+
+a:visited {
+  color: #5c5c5c; /* 深灰色 */
+}
+
+/* input,
+textarea,
+button,
+select {
+  font-family: inherit;
+  font-size: inherit; 
+  padding: 8px; 
+  margin: 4px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px; 
+} */
+
+#app {
+  width: 100%;
+  height: 100%;
+}
