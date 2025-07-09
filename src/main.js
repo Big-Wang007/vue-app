@@ -9,9 +9,9 @@ import {
 } from "vite-plugin-qiankun/dist/helper";
 
 import App from "./App.vue";
-import router from "./router";
+
 import { routes } from "./router";
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import installAntd from "@/utils/ant-design-vue.js";
 
 import "@/api/mock/list.js";
@@ -24,55 +24,45 @@ const I18n = setupI18n();
 initI18n(I18n);
 
 let app = null;
+let router = null;
 // 微应用独立运行
-if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
-  console.log("微应用独立运行");
+function render(props = {}) {
+  const { container, basePath } = props;
+  router = createRouter({
+    history: createWebHashHistory("/"),
+    routes,
+  });
+  console.log("router", router);
+  
   app = createApp(App);
   app.use(router);
   app.use(createPinia());
   app.use(I18n);
   installAntd(app);
-  app.mount("#app");
-} else {
-  console.log("qiankun模式");
-  renderWithQiankun({
-    mount(props) {
-      console.log("[微应用] mount", props);
-      app = createApp(App);
-      const { container, basePath } = props;
-      const subAppRouter = createRouter({
-        history: createWebHistory(basePath),
-        routes: [...routes],
-      });
-
-      app.use(subAppRouter);
-      app.use(createPinia());
-      app.use(I18n);
-      installAntd(app);
-      props.onGlobalStateChange((state) => {
-        console.log("收到全局状态变更:", state);
-        if (state.locale) {
-          // 通常我们会将语言设置到微应用的状态管理（如Vuex/Pinia）中
-          app.config.globalProperties.$i18n.locale = state.locale;
-        }
-      }, true); // 第二个参数为true表示立即执行一次
-      app.mount(container ? container.querySelector("#app") : "#app");
-      // 同步初始路由状态
-      //   window.parent.postMessage(
-      //     {
-      //       type: "micro-route-change",
-      //       path: window.location.pathname,
-      //     },
-      //     "*"
-      //   );
-    },
-    bootstrap() {
-      console.log("[微应用] bootstrap");
-    },
-    unmount() {
-      console.log("[微应用] unmount");
-      app.unmount();
-      app = null;
-    },
-  });
+  // 确保路由初始化完成后再挂载应用
+  app.mount(container ? container.querySelector("#app") : "#app");
 }
+
+// 独立运行时
+if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
+  render({ basePath: "/" });
+}
+renderWithQiankun({
+  bootstrap() {
+    console.log("[微应用] bootstrap");
+    return Promise.resolve();
+  },
+
+  mount(props) {
+    console.log("[微应用] mount");
+    render(props);
+    return Promise.resolve();
+  },
+
+  unmount() {
+    console.log("[微应用] unmount");
+    app.unmount();
+    app = null;
+    return Promise.resolve();
+  },
+});
