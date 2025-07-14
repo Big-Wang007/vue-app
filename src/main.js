@@ -19,6 +19,8 @@ import "@/api/mock/list.js";
 import { setupI18n } from "./lang/index.js";
 import { initI18n } from "./utils/utils.js";
 
+import { registerSW } from "virtual:pwa-register";
+
 // 按需异步加载i18n
 const I18n = setupI18n();
 initI18n(I18n);
@@ -76,3 +78,16 @@ if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
     },
   });
 }
+
+const updateSW = registerSW({
+  immediate: true,
+  onNeedRefresh() {
+    // 当有新内容时，可以提示用户刷新
+    if (confirm("发现新版本，是否立即更新？")) {
+      updateSW();
+    }
+  },
+  onOfflineReady() {
+    // 离线准备好时的回调
+  },
+});

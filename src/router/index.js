@@ -6,10 +6,13 @@ if (window.__POWERED_BY_QIANKUN__) {
   // 从主应用传递的 basePath 或从 activeRule 获取
   base = "/vue-app/";
   console.log(base);
-  
 }
 
 export const routes = [
+  {
+    path: "/",
+    redirect: "list",
+  },
   {
     path: "/dashboard",
     name: "dashboard",
